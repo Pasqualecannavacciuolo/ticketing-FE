@@ -12,6 +12,7 @@ import logo from "@/public/logo.png";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
+import { Button as MovingBorderButton } from "./ui/moving-border";
 
 export function Navbar() {
   const { isAuthenticated } = useKindeBrowserClient();
@@ -92,11 +93,19 @@ export function Navbar() {
                 {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
                 <a
                   href="#"
-                  className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
+                  className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                   aria-current="page"
                 >
                   Home
                 </a>
+                {isAuthenticated ? (
+                  <MovingBorderButton borderRadius="0.75rem">
+                    <a href="/dashboard">Dashboard</a>
+                  </MovingBorderButton>
+                ) : (
+                  <></>
+                )}
+
                 <a
                   href="#"
                   className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
