@@ -1,6 +1,8 @@
 export async function getTicketDetails(id: string) {
   try {
-    const res = await fetch(`http://localhost:3000/api/tickets/${id}`);
+    const res = await fetch(`http://localhost:3000/api/tickets/${id}`, {
+      cache: "no-store",
+    });
     const ticket = await res.json();
     return ticket;
   } catch (error) {

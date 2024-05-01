@@ -10,7 +10,9 @@ export default async function Dashboard() {
   const { isAuthenticated } = getKindeServerSession();
 
   const fetchTickets = async () => {
-    const res = await fetch("http://localhost:3000/api/tickets");
+    const res = await fetch("http://localhost:3000/api/tickets", {
+      cache: "no-store",
+    });
     const tickets = await res.json();
     return tickets;
   };
