@@ -7,7 +7,8 @@ import { DataTable } from "../tickets/ticket_table/data-table";
 import { columns } from "../tickets/ticket_table/columns";
 
 export default async function Dashboard() {
-  const { isAuthenticated } = getKindeServerSession();
+  const { getUser, isAuthenticated, getAccessToken } = getKindeServerSession();
+  let tickets: any[] = [];
 
   const fetchTickets = async () => {
     const res = await fetch("http://localhost:3000/api/tickets", {
@@ -17,7 +18,19 @@ export default async function Dashboard() {
     return tickets;
   };
 
-  const tickets = await fetchTickets();
+  try {
+    /*const user = await getUser();
+    console.log("User ID: ", user?.id);
+    console.log("Is Authenticated: ", await isAuthenticated());
+    console.log("Access Token: ", await getAccessToken());*/
+    if (await isAuthenticated()) {
+      tickets = await fetchTickets();
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message);
+    }
+  }
 
   return (await isAuthenticated()) ? (
     <div className="container mx-auto py-10">
