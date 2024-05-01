@@ -1,13 +1,15 @@
 import React from "react";
-import { columns } from "./tickets/ticket_table/columns";
-import { DataTable } from "./tickets/ticket_table/data-table";
+
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import {
   RegisterLink,
   LoginLink,
   LogoutLink,
 } from "@kinde-oss/kinde-auth-nextjs/components";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+
 import { Button } from "@/components/ui/button";
+import { SparklesCore } from "@/components/ui/sparkles";
+import { Navbar } from "@/components/navbar";
 
 export default async function Home() {
   const { getUser, isAuthenticated } = getKindeServerSession();
@@ -15,33 +17,44 @@ export default async function Home() {
   console.log("User ID: ", user?.id);
   console.log("Is Authenticated: ", await isAuthenticated());
 
-  const fetchTickets = async () => {
-    const res = await fetch("http://localhost:3000/api/tickets");
-    const tickets = await res.json();
-    return tickets;
-  };
-
-  const tickets = await fetchTickets();
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="flex gap-3">
-        <Button variant="outline">
-          <LoginLink>Sign in</LoginLink>
-        </Button>
-        <Button variant="outline">
-          <RegisterLink>Sign up</RegisterLink>
-        </Button>
-        <Button variant="outline">
-          <LogoutLink>Log out</LogoutLink>
-        </Button>
-      </div>
-
-      <div className="container mx-auto py-10">
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-          Managing your tickets
+    <main className="h-screen flex flex-col gap-0">
+      <Navbar />
+      <div className="h-screen w-full bg-black flex flex-col items-center justify-center overflow-hidden">
+        <h1 className="md:text-7xl text-3xl lg:text-9xl font-bold text-center text-white relative z-20 -mt-56">
+          Ticketing
         </h1>
-        <DataTable columns={columns} data={tickets} />
+        <div className="w-[40rem] h-40 relative">
+          {/* Gradients */}
+          <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-[2px] w-3/4 blur-sm" />
+          <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-px w-3/4" />
+          <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-[5px] w-1/4 blur-sm" />
+          <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px w-1/4" />
+
+          {/* Core component */}
+          <SparklesCore
+            background="transparent"
+            minSize={0.4}
+            maxSize={1}
+            particleDensity={1200}
+            className="w-full h-36 md:h-full lg:h-full xl:h-full"
+            particleColor="#FAFAFA"
+          />
+
+          {/* Radial Gradient to prevent sharp edges */}
+          <div className="absolute inset-0 w-full h-full bg-black [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]"></div>
+          <h2 className="w-64 mx-auto md:text-xl md:w-80 text-md lg:text-3xl lg:w-full text-center text-white relative z-20">
+            The best solution for developers to manage assistance tickets
+          </h2>
+          <div className="flex gap-5 justify-center mt-5">
+            <Button variant={"outline"}>
+              <a href="/whatwedo">Learn more</a>
+            </Button>
+            <Button variant={"outline"}>
+              <RegisterLink postLoginRedirectURL="/">Access</RegisterLink>
+            </Button>
+          </div>
+        </div>
       </div>
     </main>
   );
