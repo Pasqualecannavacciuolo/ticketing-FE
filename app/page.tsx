@@ -1,11 +1,9 @@
 import React from "react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import {
-  RegisterLink,
-  LoginLink,
-  LogoutLink,
-} from "@kinde-oss/kinde-auth-nextjs/components";
+import { RegisterLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
 import { Button } from "@/components/ui/button";
 import { SparklesCore } from "@/components/ui/sparkles";
@@ -13,9 +11,32 @@ import { Navbar } from "@/components/navbar";
 
 export default async function Home() {
   const { getUser, isAuthenticated } = getKindeServerSession();
+
+  const currentTimestamp = Date.now();
+  console.log("currentTimestamp: ", currentTimestamp);
+
+  const cookieStore = cookies();
+  const accessToken = parseInt(cookieStore.get("access_token"));
+  const refreshToken = parseInt(cookieStore.get("refresh_token"));
+
   const user = await getUser();
-  console.log("User ID: ", user?.id);
-  console.log("Is Authenticated: ", await isAuthenticated());
+  if (user) {
+    console.log("User ID: ", user?.id);
+    console.log("Is Authenticated: ", await isAuthenticated());
+  }
+
+  if (accessToken && currentTimestamp) {
+    // If accessToken is expired check refreshToken
+    if (accessToken < currentTimestamp) {
+      // If refreshToken is expired delete from cookies and redirect to home
+      if (refreshToken < currentTimestamp) {
+        cookieStore.delete("access_token");
+        cookieStore.delete("refresh_token");
+        redirect("/");
+      }
+    }
+    redirect("/api/auth/login");
+  }
 
   return (
     <main className="h-screen flex flex-col gap-0">
